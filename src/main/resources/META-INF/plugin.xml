@@ -1,18 +1,33 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.github.ivaneod.kotlinjsinspections</id>
-    <name>kotlinjsinspections Template</name>
+    <name>Kotlin JS Inspections</name>
     <vendor>ivaneod</vendor>
-
     <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.kotlin</depends>
+    <depends>com.intellij.java</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
+    <resource-bundle>messages.KotlinJsInspections</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.ivaneod.kotlinjsinspections.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+        <toolWindow factoryClass="com.github.ivaneod.kotlinjsinspections.toolWindow.MyToolWindowFactory"
+                    id="MyToolWindow"/>
+
+        <localInspection language="kotlin"
+                         bundle="messages.KotlinJsInspections"
+                         key="inspection.kotlinjs.external.method.display.name"
+                         groupPath="KotlinJS"
+                         groupBundle="messages.KotlinJsInspections"
+                         groupKey="inspection.kotlinjs.group.display.name"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.github.ivaneod.kotlinjsinspections.inspections.ExternalMethodInspection"/>
+        />
+
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.ivaneod.kotlinjsinspections.listeners.MyFrameStateListener" topic="com.intellij.ide.FrameStateListener"/>
+        <listener class="com.github.ivaneod.kotlinjsinspections.listeners.MyFrameStateListener"
+                  topic="com.intellij.ide.FrameStateListener"/>
     </applicationListeners>
 </idea-plugin>

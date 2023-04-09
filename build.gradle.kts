@@ -5,50 +5,44 @@ fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
 
 plugins {
-    // Java support
     id("java")
-    // Kotlin support
     id("org.jetbrains.kotlin.jvm") version "1.8.10"
-    // Gradle IntelliJ Plugin
-    id("org.jetbrains.intellij") version "1.13.2"
-    // Gradle Changelog Plugin
+    id("org.jetbrains.intellij") version "1.5.3"
     id("org.jetbrains.changelog") version "2.0.0"
-    // Gradle Qodana Plugin
     id("org.jetbrains.qodana") version "0.1.13"
-    // Gradle Kover Plugin
     id("org.jetbrains.kotlinx.kover") version "0.6.1"
 }
 
 group = properties("pluginGroup").get()
 version = properties("pluginVersion").get()
 
-// Configure project's dependencies
 repositories {
     mavenCentral()
 }
 
-// Set the JVM language level used to build the project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
+dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.0")
+}
+
 kotlin {
     jvmToolchain(11)
 }
 
-// Configure Gradle IntelliJ Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
+
 intellij {
     pluginName.set(properties("pluginName"))
     version.set(properties("platformVersion"))
     type.set(properties("platformType"))
 
-    // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
     plugins.set(properties("platformPlugins").map { it.split(',').map(String::trim).filter(String::isNotEmpty) })
 }
 
-// Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
     groups.empty()
     repositoryUrl.set(properties("pluginRepositoryUrl"))
 }
 
-// Configure Gradle Qodana Plugin - read more: https://github.com/JetBrains/gradle-qodana-plugin
 qodana {
     cachePath.set(provider { file(".qodana").canonicalPath })
     reportPath.set(provider { file("build/reports/inspections").canonicalPath })
@@ -56,12 +50,12 @@ qodana {
     showReport.set(environment("QODANA_SHOW_REPORT").map { it.toBoolean() }.getOrElse(false))
 }
 
-// Configure Gradle Kover Plugin - read more: https://github.com/Kotlin/kotlinx-kover#configuration
 kover.xmlReport {
     onCheck.set(true)
 }
 
 tasks {
+
     wrapper {
         gradleVersion = properties("gradleVersion").get()
     }
